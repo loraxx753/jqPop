@@ -1,0 +1,28 @@
+#popupback { 
+	background:#000000; 
+	opacity:.5; 
+	z-index:1000; 
+	position:fixed; 
+	left:0; 
+	top:0; 
+	margin-top:-21px; 
+}
+#popup 
+{ 
+	z-index:1050; 
+	position:absolute; 
+	padding: 10px; 
+}
+#popup.dark
+{
+	background:#262626; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: 3px solid #888; 
+	color: #FFFFFF;
+}
+#popup.light 
+{
+	background:#ffffff; 
+	color: #000000;
+}
