@@ -13,6 +13,12 @@
 	position:absolute; 
 	padding: 10px; 
 }
+/**
+ * BACKGROUND STYLE CLASSES
+ * 
+ * To make a new background style, just add a class here and call that class with 
+ * the backgroundStyle parameter
+ */
 #popup.dark
 {
 	background:#262626; 
@@ -21,7 +27,7 @@
 	border: 3px solid #888; 
 	color: #FFFFFF;
 }
-#popup.light 
+#popup.default 
 {
 	background:#ffffff; 
 	color: #000000;

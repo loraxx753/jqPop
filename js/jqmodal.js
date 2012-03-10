@@ -4,17 +4,25 @@
  * defaults:
  *
  * {
- *	 'modal' : true,      //True for showing lightbox fadeout div, false for no background.
- *	 'backgroundStyle'       : 'light',   //'light' for a white popup, 'dark' for a black one
+ *		  'modal'                : true,
+ *		  'backgroundStyle'      : 'default',
+ *		  'html'                 : '',
+ *		  'name'                 : '',
+ *		  'src'                  : '',
+ *		  'closingSelectors'     : [],
  * };
  *
  * Create a popup with default parameters:
  *
- *	$('#button').popup(function() {
- *		$('#popup').html('<button id="test">test</button>'); //Populated the html of the popup.
- *		$('#test').popup('close'); //When the user clicks on the #test button, the popup will close.
+ *	$('#button').jqmodal({
+ *			html : '<p>Populates the popup with html',
+ * 			closingSelectors : ['an array of selectors that will close the windows']
+ *		})
  *	});
  *
+ *
+ *
+ *	Options:
  **/
 
 (function( $ ){
@@ -134,7 +142,7 @@
 	$.fn.jqmodal = function( method, options ) {
 		var settings = {
 		  'modal'                : true,
-		  'backgroundStyle'      : 'light',
+		  'backgroundStyle'      : 'default',
 		  'html'                 : '',
 		  'name'                 : '',
 		  'src'                  : '',
