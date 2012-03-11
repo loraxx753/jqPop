@@ -179,56 +179,22 @@
 		},
 	};
 
-	$.fn.jqmodal = function( method, options ) {
+	$.fn.jqmodal = function( options ) {
 		//Initial settings
 		var settings = {
 		  'modal'                : true,
 		  'backgroundStyle'      : 'default',
 		  'html'                 : '',
-		  'className'                 : '',
+		  'className'            : '',
 		  'src'                  : '',
 		  'closingSelectors'     : [],
 		};
 
-		//Makes it so none of the methods can be called publicly.
-		var privateMethods = [
-			'modal',
-			'build',
-			'closingSelectors',
-			'init',
-		];
-
-		// TODO: Change this since we're not using method calling really anymore.
-		if ( methods[method] ) 
+		if(typeof options == 'object')
 		{
-			if($.inArray(method, privateMethods) < 0)
-			{
-				return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-			}
-			else
-			{
-				$.error( 'Method ' +  method + ' does not exist or is private on $.jqmodal' );
-			}
-		} 
-		else if ( typeof method === 'object' || ! method ) 
-		{
-			if(typeof method == 'object')
-			{
-				method = $.extend( settings, method);
-			}
-			else
-			{
-				var temp = new Array();
-				temp.push(settings);
-				temp.push(arguments[0]);
-				arguments = temp; 
-			}
-			return methods.init.apply( this, arguments );
+			options = $.extend( settings, options );
 		}
-		else 
-		{
-			$.error( 'Method ' +  method + ' does not exist or is private on $.jqmodal' );
-		}    
+		return methods.init.apply( this, arguments );
 	};
 
 })( jQuery );
