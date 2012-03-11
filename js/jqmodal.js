@@ -16,6 +16,8 @@
  *		  src                  : '',
  *		  //An array of selectors that, when clicked, will close the popup window.
  *		  closingSelectors     : [],
+ *		  //Whether clicking the background will close the popup or not. default true
+ *		  backgroundClose     : true
  * };
  *
  * Create a popup with default parameters:
@@ -53,7 +55,10 @@
 				{
 					methods.modal();
 					//Adds a click-to-close function on the background.
-					methods.closingSelectors($('#popupback'));
+					if(options.backgroundClose)
+					{
+						methods.closingSelectors($('#popupback'));
+					}
 				}
 				//Prepends the body with the popup, and adds the desired background style to it.
 				$('body').prepend('<div id="popup" class="'+options.backgroundStyle+'"></div>');
@@ -73,7 +78,7 @@
 				}
 				if(options.html)
 				{
-					methods.build(options.html, options.closingSelectors);
+					methods.build(options.html, options.closingSelectors, callback);
 				}
 				else if(options.src)
 				{
@@ -179,7 +184,7 @@
 		},
 	};
 
-	$.fn.jqmodal = function( options ) {
+	$.fn.jqmodal = function( options, callback ) {
 		//Initial settings
 		var settings = {
 		  'modal'                : true,
@@ -188,13 +193,14 @@
 		  'className'            : '',
 		  'src'                  : '',
 		  'closingSelectors'     : [],
+		  'backgroundClose'		 : true,
 		};
 
 		if(typeof options == 'object')
 		{
 			options = $.extend( settings, options );
 		}
-		return methods.init.apply( this, arguments );
+		return methods.init.apply( this, arguments, callback );
 	};
 
 })( jQuery );
