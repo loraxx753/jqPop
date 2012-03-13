@@ -5,19 +5,23 @@
  *
  * {
  *		  //Whether the background darkens or not.
- *		  modal                : true,
+ *		  modal               : true,
  *		  //The style of the popup window (currently either default or dark).
- *		  backgroundStyle      : 'default',
+ *		  backgroundStyle     : 'default',
  *		  //The html to be entered into the popup window.
- *		  html                 : '',
+ *		  html                : '',
  *		  //The name of the popup window (used for styling, selected with #popup.className)
- *		  className                 : '',
+ *		  className           : '',
  *		  //The href of the html if on a different file (don't use this and html together)
- *		  src                  : '',
+ *		  src                 : '',
  *		  //An array of selectors that, when clicked, will close the popup window.
- *		  closingSelectors     : [],
+ *		  closingSelectors    : [],
  *		  //Whether clicking the background will close the popup or not. default true
  *		  backgroundClose     : true
+ *		  //Determine the id of the popup window
+ *		  popupId             : 'popup'
+ *		  //The id of the popup background
+ *		  backgroundId        : 'popupback'
  * };
  *
  * Create a popup with default parameters:
@@ -41,10 +45,11 @@
 		 */
 		init : function( options, callback ) 
 		{
+			console.log(options);
 			//Binds the button to the popup
 			$(this).click(function(e) {
 				//Makes sure there's not already a popup there
-				if($('#popup').length > 0)
+				if($(options.popupId).length > 0)
 				{
 					return false;
 				}
@@ -53,22 +58,21 @@
 				//If the background needs to be darkened
 				if(options.modal)
 				{
-					methods.modal();
+					methods.modal(options.backgroundId);
 					//Adds a click-to-close function on the background.
 					if(options.backgroundClose)
 					{
-						methods.closingSelectors($('#popupback'));
+						methods.closingSelectors($(options.backgroundId), options.popupId);
 					}
 				}
 				//Prepends the body with the popup, and adds the desired background style to it.
-				$('body').prepend('<div id="popup" class="'+options.backgroundStyle+'"></div>');
-
+				$('body').prepend('<div id="'+options.popupId+'" class="'+options.backgroundStyle+'"></div>');
 				//If a name was chosen, add that class name to the popup div.
 				if(options.className != '')
 				{
-					$('#popup').addClass(options.className);
+					$('#'+options.popupId).addClass(options.className);
 				}
-				$('#popup').hide();
+				$('#'+options.popupId).hide();
 				
 				var inner = ''
 				if(options.html && options.src)
@@ -78,7 +82,7 @@
 				}
 				if(options.html)
 				{
-					methods.build(options.html, options.closingSelectors, callback);
+					methods.build(options.html, options.closingSelectors, options.popupId, options.backgroundId, callback);
 				}
 				else if(options.src)
 				{
@@ -87,7 +91,7 @@
 					$('#dump').hide().load(options.src, function() {
 						var html = $('#dump').html();
 						$('#dump').remove();
-						methods.build(html, options.closingSelectors, callback);
+						methods.build(html, options.closingSelectors, options.popupId, options.backgroundId, callback);
 					});
 				}
 			});
@@ -95,23 +99,23 @@
 		/**
 		 * Populates the popup window and positions it in the middle of the screen.
 		 */
-		build : function( inner, closingSelectors, callback )
+		build : function( inner, closingSelectors, popupId, backgroundId, callback )
 		{
-			$('#popup').html(inner);
+			$('#'+popupId).html(inner);
 
 			//gets the middle positions of the window.
-			var leftMarginMinusWidthHalfWay = ($(window).width()/2) - ($('#popup').width()/2);
-			var topMarginMinusHeightHalfWay = ($(window).height()/2) - ($('#popup').height()/2);
+			var leftMarginMinusWidthHalfWay = ($(window).width()/2) - ($('#'+popupId).width()/2);
+			var topMarginMinusHeightHalfWay = ($(window).height()/2) - ($('#'+popupId).height()/2);
 
-			$('#popup').css({'left' : leftMarginMinusWidthHalfWay, 'top' : topMarginMinusHeightHalfWay});
-			$('#popup').fadeIn(300);
+			$('#'+popupId).css({'left' : leftMarginMinusWidthHalfWay, 'top' : topMarginMinusHeightHalfWay});
+			$('#'+popupId).fadeIn(300);
 
 			//If there are any closing selectors chosen, then for each closing selector, bind it to close the popup.
 			if(closingSelectors.length > 0)
 			{
 				for(i in closingSelectors)
 				{
-					methods.closingSelectors(closingSelectors[i]);
+					methods.closingSelectors(closingSelectors[i], popupId, backgroundId);
 				}
 			}
 
@@ -119,7 +123,7 @@
 			try {
 				var tabPlace = 0;
 				//Little known jQuery UI selector, :tabbable. Will find anything that's able to be selected with the tab key.
-				var tabArray =  $('#popup').find(':tabbable');
+				var tabArray =  $('#'+popupId).find(':tabbable');
 				tabArray[tabPlace].focus();
 				$(window).keydown(function(e) {
 				   var code = e.keyCode || e.which;
@@ -159,28 +163,30 @@
 		/**
 		 * Binds the selected element to close the popup window.
 		 */
-		closingSelectors : function( element ) 
+		closingSelectors : function( element, popupId, backgroundId ) 
 		{
 			$(element).click(function() {
-				if($("#popup").length > 0) { $("#popup").fadeOut(300,function(){$('#popup').remove();}); }
-				if($("#popupback").length > 0) { $("#popupback").fadeOut(300,function(){$('#popupback').remove();}); }
+				if($('#'+popupId).length > 0) { $('#'+popupId).fadeOut(300,function(){$('#'+popupId).remove();}); }
+				if($('#'+backgroundId).length > 0) { $('#'+backgroundId).fadeOut(300,function(){$('#'+backgroundId).remove();}); }
 				$(window).unbind('keydown');
 			});
 		},
 		/**
 		 * Makes the darkened background
 		 */
-		modal : function() 
+		modal : function(backgroundId) 
 		{
 			width = $(document).width()+100;
 			height = $(document).height()+100;
 			
-			$('body').prepend('<div id="popupback"></div>');
+			$('body').prepend('<div id="'+backgroundId+'"></div>');
 			
-			$('#popupback').hide();
-			$('#popupback').fadeIn(300);
-			$('#popupback').width(width);
-			$('#popupback').height(height);
+			console.log($('body'));
+
+			$('#'+backgroundId).hide();
+			$('#'+backgroundId).fadeIn(300);
+			$('#'+backgroundId).width(width);
+			$('#'+backgroundId).height(height);
 		},
 	};
 
@@ -194,6 +200,8 @@
 		  'src'                  : '',
 		  'closingSelectors'     : [],
 		  'backgroundClose'		 : true,
+		  'popupId'				 : 'popup',
+		  'backgroundId'         : 'popupback'
 		};
 
 		if(typeof options == 'object')
