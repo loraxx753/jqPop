@@ -45,7 +45,6 @@
 		 */
 		init : function( options, callback ) 
 		{
-			console.log(options);
 			//Binds the button to the popup
 			$(this).click(function(e) {
 				//Makes sure there's not already a popup there
@@ -82,7 +81,7 @@
 				}
 				if(options.html)
 				{
-					methods.build(options.html, options.closingSelectors, options.popupId, options.backgroundId, callback);
+					methods.build(options.html, this, options.closingSelectors, options.popupId, options.backgroundId, callback);
 				}
 				else if(options.src)
 				{
@@ -91,7 +90,7 @@
 					$('#dump').hide().load(options.src, function() {
 						var html = $('#dump').html();
 						$('#dump').remove();
-						methods.build(html, options.closingSelectors, options.popupId, options.backgroundId, callback);
+						methods.build(html, this, options.closingSelectors, options.popupId, options.backgroundId, callback);
 					});
 				}
 			});
@@ -99,7 +98,7 @@
 		/**
 		 * Populates the popup window and positions it in the middle of the screen.
 		 */
-		build : function( inner, closingSelectors, popupId, backgroundId, callback )
+		build : function( inner, clickedElement, closingSelectors, popupId, backgroundId, callback )
 		{
 			$('#'+popupId).html(inner);
 
@@ -124,7 +123,7 @@
 				var tabPlace = 0;
 				//Little known jQuery UI selector, :tabbable. Will find anything that's able to be selected with the tab key.
 				var tabArray =  $('#'+popupId).find(':tabbable');
-				tabArray[tabPlace].focus();
+				$(clickedElement).blur();
 				$(window).keydown(function(e) {
 				   var code = e.keyCode || e.which;
 				   if (code == '9') {
